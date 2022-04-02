@@ -1,5 +1,7 @@
 # RealEstate Agent
 
+cool app
+
 ## Setup
 
 1. Install node on your machine.
