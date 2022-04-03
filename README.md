@@ -5,11 +5,10 @@ cool app
 ## Setup
 
 1. Install node on your machine.
-2. Run:
+2. Run under frontend folder:
 
 ```
-npm install -g expo-cli
-npm install -g yarn
+npm install
 ```
 
 ## Start
@@ -17,5 +16,5 @@ npm install -g yarn
 Under the frontend folder:
 
 ```
-yarn start
+npm start
 ```
