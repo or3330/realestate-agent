@@ -83,7 +83,6 @@ const App = () => {
           <Section title="Debug">
             <DebugInstructions />
           </Section>
-          <Section title="Learn More">Gal is the gayest of them all:</Section>
           <LearnMoreLinks />
         </View>
       </ScrollView>
