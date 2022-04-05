@@ -1,0 +1,52 @@
+name: PR convention enforcement
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate_commit_message:
+    name: Validate Commit Message
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Semantic Pull Request
+        id: semantic-pull-request
+        uses: amannn/action-semantic-pull-request@v3.4.6
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          # Configure which scopes are allowed.
+          scopes: |
+            application
+          # Configure that a scope must always be provided.
+          requireScope: true
+          # Configure additional validation for the subject based on a regex.
+          # This example ensures the subject doesn't start with an uppercase character.
+          subjectPattern: ^(?![A-Z]).+$
+          # If `subjectPattern` is configured, you can use this property to override
+          # the default error message that is shown when the pattern doesn't match.
+          # The variables `subject` and `title` can be used within the message.
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            didn't match the configured pattern. Please ensure that the subject
+            doesn't start with an uppercase character.
+  validate_issue_linking:
+    name: Validate Linear Issue Linking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v5
+        name: Count Linear Comments
+        id: count-linear-comments
+        with:
+          script: |
+            const linearComments = (await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            })).filter(
+              comment => comment.user.login === "linear-app[bot]"
+            );
+            return linearComments.length > 0 ? 0 : 1;
+      - name: Validate Issue Linking
+        id: validate-issue-linking
+        run: exit "${{ steps.count-linear-comments.outputs.result }}"
